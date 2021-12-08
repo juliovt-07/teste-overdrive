@@ -15,7 +15,7 @@
           </thead>
           <br>
           <tbody v-for="account in accounts" :key="account.numero">
-            <tr @click="selectAccount(refreshToken, account.codigo)" align="center">
+            <tr align="center">
               <td>{{ account.agencia }}</td>
               <td>{{ account.agenciaDigito }}</td>
               <td></td>
@@ -50,23 +50,11 @@ export default {
       this.$axios.setHeader('Authorization', this.token)
       this.accounts = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Conta/Usuario')
       this.accounts = this.accounts.data      
-    },
-    async selectAccount(refreshToken, codigoConta) {
-      this.$axios.setHeader('Authorization', this.token)
-      await this.$axios.$post('https://fulltech.api.dbs.moneyp.dev.br/v1/Autenticacao/AuthCompany',      
-      {
-       refreshToken: refreshToken,
-       codigoConta: codigoConta
-      })
-      this.$router.push('/account') 
     }
   },
   computed: {
     token() {
       return this.$store.state.token
-    },
-    refreshToken() {
-      return this.$store.state.refreshToken
     }
   }
 }
