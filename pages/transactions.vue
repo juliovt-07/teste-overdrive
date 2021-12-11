@@ -1,6 +1,16 @@
 <template>
   <div>
-    <div class="page-content">  
+    <div class="page-content">
+      <div class="select-date">
+        <div>        
+          <label>De:</label>
+          <input v-model="dataInitial" type="date">
+        </div>
+        <div>        
+          <label>Até:</label>
+          <input v-model="dataFinal" type="date">
+        </div>
+      </div>
       <h1>Extrato</h1>
       <div class="transations">
         <div class="transation" v-for="transaction in transations" :key="transaction.codigoTransacao">
@@ -43,21 +53,32 @@ export default {
     return {
       transations: [],
       page: 1,
-      totalPages: undefined
+      totalPages: undefined,
+      dataInitial: '2021-06-23',
+      dataFinal: ''
     }
   },
   created() {
     if (!this.$store.state.token) {
       this.$router.push('/')
     }
+    this.dataFinal = this.getDateNow()
   },
   mounted() {
     this.fetchTransations()
   },
+  watch: {
+    dataInitial() {
+      this.fetchTransations()
+    },
+    dataFinal() {
+      this.fetchTransations()
+    }
+  },
   methods: {
     async fetchTransations() {
       this.$axios.setHeader('Authorization', this.token)
-      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial=2021-06-23&dataFinal=2021-08-23&pageSize=5&page='+this.page)
+      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial='+this.dataInitial+'&dataFinal='+this.dataFinal+'&pageSize=5&page='+this.page)
       this.totalPages = this.transations.meta.totalPages
       this.transations = this.transations.data
     },
@@ -78,6 +99,10 @@ export default {
     toPage(page) {
       this.page = page
       this.fetchTransations()
+    },
+    getDateNow() {
+      const now = new Date()
+      return now.getFullYear() + '-' + (now.getMonth()+1) + '-' + now.getDate()
     }
   },
   computed: {
@@ -89,6 +114,25 @@ export default {
 </script>
 
 <style>
+.select-date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.select-date input {
+  border: solid 1px rgba(0, 0, 255, .6);
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+  max-width: 150px;
+  outline: none;
+  transition: all .3s ease;
+}
+.select-date input:hover {
+  color: rgba(0, 0, 255, .8);
+}
 .transations {
   width: 100%;
   display: flex;
