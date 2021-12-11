@@ -1,7 +1,8 @@
 <template>
   <div class="layout">
     <img class="logo" v-if="logged" :src="logoImg" width="150">
-    <div v-if="logged" class="exit" @click="logout()">Sair</div>
+    <div v-if="logged" class="btn exit" @click="logout()">Sair</div>
+    <div v-if="$route.path === '/transactions'" class="btn back" @click="back()">Voltar</div>
     <transition name="fade">    
       <Nuxt class="content"/>
     </transition>
@@ -29,6 +30,9 @@ export default {
     logout() {
       this.$store.commit('logout')
       this.$router.push('/')
+    },
+    back() {
+      this.$router.push('/bank-accounts')
     }
   }
 }
@@ -42,15 +46,17 @@ export default {
   }
   .layout {
     background-color: #dcdcdc;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 30px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Inter', sans-serif;
     position: relative;
+    gap: 20px;
   }
-  .exit {
+  .btn {
     border: solid 1px #8c8c8c;
     padding: 6px 12px;
     font-size: 14px;
@@ -58,17 +64,18 @@ export default {
     color: rgba(0, 0, 0, .8);
     position: absolute;
     top: 20px;
-    right: 20px;
     cursor: pointer;
     transition: all .2s ease;
   }
-  .exit:hover {
+  .exit {
+    right: 20px;
+  }
+  .back {
+    left: 20px;
+  }
+  .btn:hover {
     background-color: #8c8c8c;
     color: #fafafa;
-  }
-  .logo {
-    position: absolute;
-    top: 65px;
   }
   .content {
     background-color: #fff;

@@ -15,7 +15,7 @@
           </thead>
           <br>
           <tbody v-for="account in accounts" :key="account.numero">
-            <tr @click="selectAccount(refreshToken, account.codigo)" align="center">
+            <tr class="account" @click="selectAccount(refreshToken, account.codigo)" align="center">
               <td>{{ account.agencia }}</td>
               <td>{{ account.agenciaDigito }}</td>
               <td></td>
@@ -53,12 +53,13 @@ export default {
     },
     async selectAccount(refreshToken, codigoConta) {
       this.$axios.setHeader('Authorization', this.token)
-      await this.$axios.$post('https://fulltech.api.dbs.moneyp.dev.br/v1/Autenticacao/AuthCompany',      
+      const token = await this.$axios.$post('https://fulltech.api.dbs.moneyp.dev.br/v1/Autenticacao/AuthCompany',      
       {
        refreshToken: refreshToken,
        codigoConta: codigoConta
       })
-      this.$router.push('/account') 
+      this.$store.commit('login', token)
+      this.$router.push('/transactions') 
     }
   },
   computed: {
@@ -88,11 +89,13 @@ export default {
   tr {
     font-weight: 500;
     font-size: 14px;
-    cursor: pointer;
     transition: all .2s ease;
   }
-  tr:hover {
-    color: rgba(0, 0, 255, .6)
+  .account {
+    cursor: pointer;
+  }
+  .account:hover {
+    color: rgba(0, 0, 255, .6);
   }
   tr p {
     font-size: 11px;
