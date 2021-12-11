@@ -42,7 +42,7 @@ export default {
   methods: {
     async fetchTransations() {
       this.$axios.setHeader('Authorization', this.token)
-      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial=2021-06-23&dataFinal=2021-08-23&pageSize=10&page=200')
+      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial=2021-06-23&dataFinal=2021-08-23&pageSize=8&page=370')
       this.transations = this.transations.data
     }
   },
@@ -85,6 +85,7 @@ export default {
   font-weight: 500;
 }
 p {
+  color: rgba(0, 0, 0, .9);
   font-size: 12px;
 }
 .green {
