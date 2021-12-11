@@ -20,6 +20,19 @@
           </div>
         </div>
       </div>
+      <div class="navigation">
+        <svg style="cursor: pointer;" @click="backPage" width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.7" d="M6 10.873L1 5.97681L6 1.08057" stroke="#505050" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p @click="toPage(page-2)" v-if="this.page > 2">{{ this.page-2 }}</p>
+        <p @click="toPage(page-1)" v-if="this.page > 2">{{ this.page-1 }}</p>
+        <p @click="toPage(page)"><b>{{ this.page }}</b></p>
+        <p @click="toPage(page+1)">{{ this.page+1 }}</p>
+        <p @click="toPage(page+2)">{{ this.page+2 }}</p>
+        <svg style="cursor: pointer;" @click="nextPage" width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path opacity="0.7" d="M1 10.873L6 5.97681L1 1.08057" stroke="#505050" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
@@ -28,7 +41,9 @@
 export default {
   data () {
     return {
-      transations: []
+      transations: [],
+      page: 1,
+      totalPages: undefined
     }
   },
   created() {
@@ -42,8 +57,27 @@ export default {
   methods: {
     async fetchTransations() {
       this.$axios.setHeader('Authorization', this.token)
-      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial=2021-06-23&dataFinal=2021-08-23&pageSize=8&page=370')
+      this.transations = await this.$axios.$get('https://fulltech.api.dbs.moneyp.dev.br/v1/Extrato/Periodo?dataInicial=2021-06-23&dataFinal=2021-08-23&pageSize=5&page='+this.page)
+      this.totalPages = this.transations.meta.totalPages
       this.transations = this.transations.data
+    },
+    nextPage() {
+      this.page = this.page + 1
+      if (this.page === this.totalPages) {
+        this.page = 1
+      }
+      this.fetchTransations()
+    },
+    backPage() {
+      this.page = this.page - 1
+      if (this.page === 0) {
+        this.page = this.totalPages-1
+      }
+      this.fetchTransations()
+    },
+    toPage(page) {
+      this.page = page
+      this.fetchTransations()
     }
   },
   computed: {
@@ -93,5 +127,13 @@ p {
 }
 .red {
   color: red;
+}
+.navigation {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+}
+.navigation p {
+  cursor: pointer;
 }
 </style>
